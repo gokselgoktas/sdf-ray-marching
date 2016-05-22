@@ -29,3 +29,4 @@ stuff happen on the screen:
 * Goksel Goktas (author)
 * Jens Holm (author)
 * ~~Sly~~ Tim Cooper
+* Kasper Engelstoft
