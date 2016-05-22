@@ -3,6 +3,8 @@
 A simple project showing how to integrate a signed distance field (SDF) based
 ray marcher into Unity's deferred shading pipeline.
 
+![Screenshot](http://i.imgur.com/g25vLbp.png)
+
 Our implementation fills in the necessary information garnered from the virtual
 scene's SDF into Unity's G-buffer, into which Unity further writes, throughout
 the G-buffer construction part of its deferred shading pipeline.
