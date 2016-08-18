@@ -5,7 +5,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
-public class RayMarcher : MonoBehaviour
+public class RayMarching : MonoBehaviour
 {
     [Range(1, 1000)]
     public int maximumIterationCount = 128;
@@ -19,7 +19,7 @@ public class RayMarcher : MonoBehaviour
         get
         {
             if (m_Shader == null)
-                m_Shader = Shader.Find("Hidden/Ray-marcher");
+                m_Shader = Shader.Find("Hidden/Ray Marching");
 
             return m_Shader;
         }
@@ -108,7 +108,7 @@ public class RayMarcher : MonoBehaviour
         if (m_CommandBuffer == null)
         {
             m_CommandBuffer = new CommandBuffer();
-            m_CommandBuffer.name = "Ray-marcher";
+            m_CommandBuffer.name = "Ray Marching";
             m_CommandBuffer.DrawMesh(quad, Matrix4x4.identity, material, 0, 0, null);
 
             camera_.AddCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);

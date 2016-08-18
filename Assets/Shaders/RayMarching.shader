@@ -1,4 +1,4 @@
-Shader "Hidden/Ray-marcher"
+Shader "Hidden/Ray Marching"
 {
     Properties
     {
