@@ -59,7 +59,7 @@ Shader "Hidden/Ray Marching"
         return length(position - float3(-1.5, 0., 0.)) - .5;
     }
 
-    float intersect(in float3 origin, in float3 direction, out float depth)
+    float march(in float3 origin, in float3 direction, out float depth)
     {
         float sample = _ProjectionParams.z;
         depth = _ProjectionParams.y;
@@ -141,7 +141,7 @@ Shader "Hidden/Ray Marching"
         #endif
     }
 
-    float3 getWorldSpacePosition(in float2 uv)
+    float3 getDirection(in float2 uv)
     {
         return normalize(float3(
             UNITY_MATRIX_V[0].xyz * uv.x +
@@ -157,10 +157,10 @@ Shader "Hidden/Ray Marching"
         coordinates.x *= _ScreenParams.x / _ScreenParams.y;
 
         float3 origin = _WorldSpaceCameraPos;
-        float3 direction = getWorldSpacePosition(coordinates);
+        float3 direction = getDirection(coordinates);
 
         float depth = 0.;
-        float sample = intersect(origin, direction, depth);
+        float sample = march(origin, direction, depth);
 
         float3 position = origin;
         float3 normal = 0.;
