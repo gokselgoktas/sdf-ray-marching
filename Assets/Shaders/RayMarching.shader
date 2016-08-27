@@ -24,6 +24,16 @@ Shader "Hidden/Ray Marching"
         float2 uv : TEXCOORD0;
     };
 
+    struct GBuffer
+    {
+        half4 diffuse : SV_Target0;
+        half4 specularSmoothness : SV_Target1;
+        half4 normal : SV_Target2;
+        half4 emission : SV_Target3;
+
+        float depth : SV_Depth;
+    };
+
     Varyings vertex(Input input)
     {
         Varyings output;
@@ -131,15 +141,13 @@ Shader "Hidden/Ray Marching"
         #endif
     }
 
-    struct GBuffer
+    float3 getWorldSpacePosition(in float2 uv)
     {
-        half4 diffuse : SV_Target0;
-        half4 specularSmoothness : SV_Target1;
-        half4 normal : SV_Target2;
-        half4 emission : SV_Target3;
-
-        float depth : SV_Depth;
-    };
+        return normalize(float3(
+            UNITY_MATRIX_V[0].xyz * uv.x +
+            UNITY_MATRIX_V[1].xyz * uv.y -
+            UNITY_MATRIX_V[2].xyz * abs(UNITY_MATRIX_P[1][1])));
+    }
 
     GBuffer fragment(Varyings input)
     {
@@ -149,8 +157,7 @@ Shader "Hidden/Ray Marching"
         coordinates.x *= _ScreenParams.x / _ScreenParams.y;
 
         float3 origin = _WorldSpaceCameraPos;
-        float3 direction = normalize(float3(UNITY_MATRIX_V[0].xyz * coordinates.x +
-            UNITY_MATRIX_V[1].xyz * coordinates.y - UNITY_MATRIX_V[2].xyz * abs(UNITY_MATRIX_P[1][1])));
+        float3 direction = getWorldSpacePosition(coordinates);
 
         float depth = 0.;
         float sample = intersect(origin, direction, depth);
