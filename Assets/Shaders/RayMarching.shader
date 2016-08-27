@@ -34,6 +34,11 @@ Shader "Hidden/Ray Marching"
         float depth : SV_Depth;
     };
 
+    float4 _MainTex_TexelSize;
+
+    int _MaximumIterationCount;
+    float _Epsilon;
+
     Varyings vertex(Input input)
     {
         Varyings output;
@@ -43,11 +48,6 @@ Shader "Hidden/Ray Marching"
 
         return output;
     }
-
-    float4 _MainTex_TexelSize;
-
-    int _MaximumIterationCount;
-    float _Epsilon;
 
     float grain(float seed)
     {
