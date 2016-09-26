@@ -109,6 +109,7 @@ public class RayMarching : MonoBehaviour
         {
             m_CommandBuffer = new CommandBuffer();
             m_CommandBuffer.name = "Ray Marching";
+            m_CommandBuffer.SetGlobalFloat("_YAxisRaySign", SystemInfo.graphicsDeviceVersion.StartsWith("Direct") ? -1f : 1f);
             m_CommandBuffer.DrawMesh(quad, Matrix4x4.identity, material, 0, 0, null);
 
             camera_.AddCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);

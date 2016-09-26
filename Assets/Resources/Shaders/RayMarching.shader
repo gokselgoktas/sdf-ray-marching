@@ -13,6 +13,8 @@ Shader "Hidden/Ray Marching"
     #include "UnityCG.cginc"
     #include "UnityGlobalIllumination.cginc"
 
+    float _YAxisRaySign;
+
     struct Input
     {
         float4 vertex : POSITION;
@@ -43,8 +45,12 @@ Shader "Hidden/Ray Marching"
     {
         Varyings output;
 
+        // Handles vertically-flipped case.
+        float vflip = sign(_MainTex_TexelSize.y);
+
         output.vertex = input.vertex;
         output.uv = input.vertex;
+        output.uv.y = _YAxisRaySign * output.uv.y;
 
         return output;
     }
