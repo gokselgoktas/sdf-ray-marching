@@ -45,6 +45,9 @@ Shader "Hidden/Ray Marching"
 
         output.vertex = input.vertex;
         output.uv = input.vertex;
+#if defined(UNITY_UV_STARTS_AT_TOP)
+        output.uv.y = -input.vertex.y;
+#endif
 
         return output;
     }
