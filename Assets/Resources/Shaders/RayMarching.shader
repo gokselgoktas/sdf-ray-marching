@@ -13,6 +13,8 @@ Shader "Hidden/Ray Marching"
     #include "UnityCG.cginc"
     #include "UnityGlobalIllumination.cginc"
 
+    float _YAxisRaySign;
+
     struct Input
     {
         float4 vertex : POSITION;
@@ -45,6 +47,9 @@ Shader "Hidden/Ray Marching"
 
         output.vertex = input.vertex;
         output.uv = input.vertex;
+        #if defined(SHADER_API_D3D11) || defined(SHADER_API_D3D11_9X) || defined(SHADER_API_D3D9)
+        output.uv.y = -output.uv.y;
+        #endif
 
         return output;
     }
