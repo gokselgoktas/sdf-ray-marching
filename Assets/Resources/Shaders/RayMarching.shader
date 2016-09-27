@@ -45,12 +45,11 @@ Shader "Hidden/Ray Marching"
     {
         Varyings output;
 
-        // Handles vertically-flipped case.
-        float vflip = sign(_MainTex_TexelSize.y);
-
         output.vertex = input.vertex;
         output.uv = input.vertex;
-        output.uv.y = _YAxisRaySign * output.uv.y;
+        #if defined(SHADER_API_D3D11) || defined(SHADER_API_D3D11_9X) || defined(SHADER_API_D3D9)
+        output.uv.y = -output.uv.y;
+        #endif
 
         return output;
     }
