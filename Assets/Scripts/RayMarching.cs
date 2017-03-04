@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using System.Collections;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(Camera))]
+[RequireComponent(typeof (Camera))]
 public class RayMarching : MonoBehaviour
 {
     [Range(1, 1000)]
@@ -43,7 +43,7 @@ public class RayMarching : MonoBehaviour
     }
 
     private Camera m_Camera;
-    public Camera camera_
+    public new Camera camera
     {
         get
         {
@@ -84,16 +84,16 @@ public class RayMarching : MonoBehaviour
 
     void OnEnable()
     {
-        camera_.depthTextureMode = DepthTextureMode.Depth;
+        camera.depthTextureMode = DepthTextureMode.Depth;
     }
 
     void OnDisable()
     {
-        if (camera_ != null)
+        if (camera != null)
         {
             if (m_CommandBuffer != null)
             {
-                camera_.RemoveCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);
+                camera.RemoveCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);
             }
 
             m_CommandBuffer = null;
@@ -111,7 +111,7 @@ public class RayMarching : MonoBehaviour
             m_CommandBuffer.name = "Ray Marching";
             m_CommandBuffer.DrawMesh(quad, Matrix4x4.identity, material, 0, 0, null);
 
-            camera_.AddCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);
+            camera.AddCommandBuffer(CameraEvent.AfterGBuffer, m_CommandBuffer);
         }
     }
 }
