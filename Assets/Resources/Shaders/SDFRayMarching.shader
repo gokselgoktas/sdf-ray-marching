@@ -1,8 +1,6 @@
 Shader "Hidden/SDF Ray Marching"
 {
     CGINCLUDE
-    #pragma target 4.0
-
     #define UNITY_SAMPLE_FULL_SH_PER_PIXEL 1
 
     #include "UnityCG.cginc"
@@ -34,12 +32,13 @@ Shader "Hidden/SDF Ray Marching"
     int _MaximumIterationCount;
     float _Epsilon;
 
-    Varyings vertex(Input input)
+    Varyings vertex(in Input input)
     {
         Varyings output;
 
         output.vertex = input.vertex;
         output.uv = input.vertex;
+
 #if defined(UNITY_UV_STARTS_AT_TOP)
         output.uv.y = -input.vertex.y;
 #endif
@@ -47,12 +46,12 @@ Shader "Hidden/SDF Ray Marching"
         return output;
     }
 
-    float grain(float seed)
+    float grain(in float seed)
     {
         return frac(sin(seed) * 423145.92642);
     }
 
-    float query(float3 position)
+    float query(in float3 position)
     {
         return length(position - float3(-1.5, 0., 0.)) - .5;
     }
@@ -84,27 +83,23 @@ Shader "Hidden/SDF Ray Marching"
         }
 
         if (i == _MaximumIterationCount)
+        {
             depth = 1.;
+        }
 
         return sample;
     }
 
-    float3 calculateNormal(float3 position)
+    float3 calculateNormal(in float3 position)
     {
-        return normalize(
-            float3(query(position + float3(_Epsilon, 0., 0.)) -
-                query(position - float3(_Epsilon, 0., 0.)),
-
-                query(position + float3(0., _Epsilon, 0.)) -
-                    query(position - float3(0., _Epsilon, 0.)),
-
-                query(position + float3(0., 0., _Epsilon)) -
-                    query(position - float3(0., 0., _Epsilon))
-            )
-        );
+        return normalize(float3(
+            query(position + float3(_Epsilon, 0., 0.)) - query(position - float3(_Epsilon, 0., 0.)),
+            query(position + float3(0., _Epsilon, 0.)) - query(position - float3(0., _Epsilon, 0.)),
+            query(position + float3(0., 0., _Epsilon)) - query(position - float3(0., 0., _Epsilon))
+        ));
     }
 
-    float3 calculateApproximateNormal(float3 position, float d)
+    float3 calculateApproximateNormal(in float3 position, in float d)
     {
         return normalize(
             float3(query(position + float3(_Epsilon, 0., 0.)),
@@ -114,23 +109,25 @@ Shader "Hidden/SDF Ray Marching"
         );
     }
 
-    float calculateAOFactor(float3 p, float3 n)
+    float calculateAOFactor(in float3 position, in float3 normal)
     {
         float sum = 0.;
-        float t = 0.;
-        float amp = 1.0;
 
-        for(int i = 0; i < 10; i++)
+        float offset = .1;
+        float amplitude = 1.;
+
+        for (int i = 0; i < 9; ++i)
         {
-            t += .1;
-            sum += amp * (t - query(p + n * t));
-            amp *= 0.7;
+            sum += amplitude * (offset - query(position + normal * offset));
+
+            amplitude *= .7;
+            offset += .1;
         }
 
         return max(0., 1. - .7 * sum);
     }
 
-    float calculateDepth(float4 clipSpacePosition)
+    float calculateDepth(in float4 clipSpacePosition)
     {
         #if defined (UNITY_UV_STARTS_AT_TOP)
             return clipSpacePosition.z / clipSpacePosition.w;
@@ -147,7 +144,7 @@ Shader "Hidden/SDF Ray Marching"
             UNITY_MATRIX_V[2].xyz * abs(UNITY_MATRIX_P[1][1])));
     }
 
-    GBuffer fragment(Varyings input)
+    GBuffer fragment(in Varyings input)
     {
         GBuffer output;
 
@@ -181,8 +178,7 @@ Shader "Hidden/SDF Ray Marching"
         output.specularSmoothness = float4(0., 0., 0., 0.);
         output.normal = float4(normal * .5 + .5, 1.);
 
-        // Emission + lighting + lightmaps + reflection probes buffer.
-        half3 ambient = ShadeSHPerPixel(normal, float3(0, 0, 0), position) * calculateAOFactor(position, normal);
+        half3 ambient = ShadeSHPerPixel(normal, 0., position) * calculateAOFactor(position, normal);
         output.emission = float4(ambient, 0.);
 
         return output;
@@ -207,6 +203,7 @@ Shader "Hidden/SDF Ray Marching"
             }
 
             CGPROGRAM
+            #pragma target 4.0
             #pragma vertex vertex
             #pragma fragment fragment
             ENDCG
