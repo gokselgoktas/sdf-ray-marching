@@ -3,7 +3,6 @@ Shader "Hidden/SDF Ray Marching"
     CGINCLUDE
     #pragma target 4.0
 
-    #define UNITY_SHOULD_SAMPLE_SH 1
     #define UNITY_SAMPLE_FULL_SH_PER_PIXEL 1
 
     #include "UnityCG.cginc"
