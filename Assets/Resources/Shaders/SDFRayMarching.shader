@@ -1,9 +1,5 @@
 Shader "Hidden/SDF Ray Marching"
 {
-    Properties
-    {
-    }
-
     CGINCLUDE
     #pragma target 4.0
 
