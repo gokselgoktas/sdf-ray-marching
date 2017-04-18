@@ -5,7 +5,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof (Camera))]
-public class RayMarching : MonoBehaviour
+public class SDFRayMarching : MonoBehaviour
 {
     [Range(1, 1000)]
     public int maximumIterationCount = 128;
@@ -19,7 +19,7 @@ public class RayMarching : MonoBehaviour
         get
         {
             if (m_Shader == null)
-                m_Shader = Shader.Find("Hidden/Ray Marching");
+                m_Shader = Shader.Find("Hidden/SDF Ray Marching");
 
             return m_Shader;
         }
